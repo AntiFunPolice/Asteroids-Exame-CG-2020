@@ -19,6 +19,7 @@ public:
     GameManager(){
         obj = new Obj("espaco");
         //skybox = new Obj("espaco");
+        create_asteroids();
     }
 
     ~GameManager(){
@@ -40,6 +41,7 @@ public:
             asteroids[i]->roty      = rand()%1*  (rand()%2 ==1 ? 1 : -1);
             asteroids[i]->rotz      = rand()%1*  (rand()%2 ==1 ? 1 : -1);
             asteroids[i]->direction = rand()%360;
+            asteroids_number++;
 
         }
     }
@@ -49,7 +51,12 @@ public:
         glDisable(GL_LIGHTING);
         obj->display();
         glEnable(GL_LIGHTING);
-        
+        for (int i = 0; i < asteroids_number; ++i)
+        {
+            asteroids[i]->display();
+        }
+
+
 
         switch (lvl)
         {

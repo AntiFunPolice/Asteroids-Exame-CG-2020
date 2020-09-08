@@ -29,12 +29,12 @@ public:
    
 
     void display(){
-        //glPushMatrix();
-        //glTranslatef(posx,posY,posz);
-        //glRotate(5,x,y,z);
-        //obj->display();
-        //glPopMatrix();
-        //adicionar incrementos
+        glPushMatrix();
+        glTranslatef(posx,posY,posz);
+        glRotate(5,rotx,roty,rotz);
+        obj->display();
+        glPopMatrix();
+        adicionar incrementos
         
     }
 };
