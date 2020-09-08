@@ -8,12 +8,12 @@ public:
     int points;
     Obj *obj;
     int lvl = 1;
-    Obj *asteroids[30];
+    Asteroid *asteroids[30];
     int asteroids_number=0;
 
        // 3 levels  up to 20 translactions for the box
     //float asteroids_children[][];
-    bool game_start = false;
+    //bool game_start = false;
  
 
     GameManager(){
@@ -33,8 +33,8 @@ public:
     }
 
     create_asteroids(){
-        for(int i = 0, i< lvl * 4,i++){
-            asteroids[i] = new Obj("asteroids");
+        for(int i = 0; i< (lvl * 4);i++){
+            asteroids[i] = new Asteroid();
             asteroids[i]->posx      = rand()%10* (rand()%2 ==1 ? 1 : -1);
             asteroids[i]->posz      = rand()%10* (rand()%2 ==1 ? 1 : -1);
             asteroids[i]->rotx      = rand()%1*  (rand()%2 ==1 ? 1 : -1);
@@ -57,19 +57,6 @@ public:
         }
 
 
-
-        switch (lvl)
-        {
-            case 1:
-                
-                break;
-            case 2:
-                
-                break;
-            case 3:
-                
-                break;
-           
-        }   
+ 
     }
 };
