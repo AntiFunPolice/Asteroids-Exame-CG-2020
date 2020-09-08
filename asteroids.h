@@ -15,10 +15,23 @@ public:
  
 
     Asteroid(){
-        if(type=1) 
+        if(type=1){ 
             obj = new Obj("asteroid");
-       else
-        obj = new Obj("asteroid_small");
+            posx      = rand()%10 * (rand()%2 ==1 ? 1 : -1);
+            posz      = rand()%10 * (rand()%2 ==1 ? 1 : -1);
+            rotx      = rand()%1 *  (rand()%2 ==1 ? 1 : -1);
+            roty      = rand()%1 *  (rand()%2 ==1 ? 1 : -1);
+            rotz      = rand()%1 *  (rand()%2 ==1 ? 1 : -1);
+            direction = rand()%360;     
+       }else{
+            obj = new Obj("asteroid_small");
+            posx      = rand()%10 * (rand()%2 ==1 ? 1 : -1);
+            posz      = rand()%10 * (rand()%2 ==1 ? 1 : -1);
+            rotx      = rand()%1 *  (rand()%2 ==1 ? 1 : -1);
+            roty      = rand()%1 *  (rand()%2 ==1 ? 1 : -1);
+            rotz      = rand()%1 *  (rand()%2 ==1 ? 1 : -1);
+            direction = rand()%360;  
+        }
     }
 
     ~Asteroid(){

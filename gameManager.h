@@ -1,5 +1,6 @@
 #include "player.h"
 #include "asteroids.h"
+#include <time.h>
 
 class GameManager
 {
@@ -33,13 +34,14 @@ public:
     }
 
     create_asteroids(){
+        srand(time(NULL));
         for(int i = 0; i< (lvl * 4);i++){
             asteroids[i] = new Asteroid();
-            asteroids[i]->posx      = rand()%10* (rand()%2 ==1 ? 1 : -1);
-            asteroids[i]->posz      = rand()%10* (rand()%2 ==1 ? 1 : -1);
-            asteroids[i]->rotx      = rand()%1*  (rand()%2 ==1 ? 1 : -1);
-            asteroids[i]->roty      = rand()%1*  (rand()%2 ==1 ? 1 : -1);
-            asteroids[i]->rotz      = rand()%1*  (rand()%2 ==1 ? 1 : -1);
+            asteroids[i]->posx      = rand()%10 * (rand()%2 ==1 ? 1 : -1);
+            asteroids[i]->posz      = rand()%10 * (rand()%2 ==1 ? 1 : -1);
+            asteroids[i]->rotx      = rand()%1 *  (rand()%2 ==1 ? 1 : -1);
+            asteroids[i]->roty      = rand()%1 *  (rand()%2 ==1 ? 1 : -1);
+            asteroids[i]->rotz      = rand()%1 *  (rand()%2 ==1 ? 1 : -1);
             asteroids[i]->direction = rand()%360;
             asteroids_number++;
 
