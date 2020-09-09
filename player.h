@@ -45,10 +45,29 @@ public:
         return max_y;
     }
    
+	void check_Limits(){
+		if(abs(xx) > 20||abs(zz) > 20){
+			xx*=-1;
+			zz*=-1;
+	
+			if(xx>0)
+				xx-=0.5;
+	
+			else
+				xx+=0.5;
+			
+			if(zz>0)
+				zz-=0.5;
+			else
+				zz+=0.5;
+			
+	
+		}
+	}
 
     void display()
     {
-        
+    	check_Limits();    
         glPushMatrix();
         glTranslatef(xx,yy,zz);
         glRotatef(180+rot,0,-1,0);

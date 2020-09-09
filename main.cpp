@@ -83,7 +83,7 @@ void init(){
     glLoadIdentity();
     create_objects();
     init_lights();
-    //glEnable(GL_LIGHTING);
+    
 
 }
 
@@ -317,25 +317,7 @@ void display_text_color(string text, GLint y,bool x){
 }
 
 
-void checkLimits(){
-	if(abs(nave->xx) > 19||abs(nave->zz) > 19){
-		nave->xx*=-1;
-		nave->zz*=-1;
 
-		if(nave->xx>0)
-			nave->xx-=0.5;
-
-		else
-			nave->xx+=0.5;
-		
-		if(nave->zz>0)
-			nave->zz-=0.5;
-		else
-			nave->zz+=0.5;
-		
-
-	}
-}
 
 void display_text(string text, GLint y){	
 		
@@ -465,16 +447,16 @@ if(fuel_counter==100){
 // ---
    
     camera();
-    checkLimits();
+    
 
     glPushMatrix();
-    //glTranslatef(nave->xx,nave->yy,nave->zz);
+   
     glRotatef(180,0,1,0);
     glRotatef(180,0,0,1);
 	game->display(); 
 
     glPopMatrix();  
-    //camerachaser();
+    
     movement2();
     
     glColor3f(1, 1, 1);
@@ -483,11 +465,12 @@ if(fuel_counter==100){
     nave->display();
 
    
+   //printf("%d\n", asteroides);
     
     
     //glTranslatef(-nave->xx,-nave->yy,-nave->zz);
-   	for (int i = 0; i < n_objects; i++)
-   	     objects[i]->display();
+   	//for (int i = 0; i < n_objects; i++)
+   	//     objects[i]->display();
    	 
     //get_map_box_display();
     
@@ -495,7 +478,7 @@ if(fuel_counter==100){
 
     //colision_detection();
 
-     get_player_box_display();
+     //get_player_box_display();
      
 
   	display_labels();
