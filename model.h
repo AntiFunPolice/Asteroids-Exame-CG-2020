@@ -70,56 +70,7 @@ private:
         }
     };
 
-    // class Material
-    //{
-    //public:
-    //    GLfloat Ka[4];
-    //    GLfloat Kd[4];
-    //    GLfloat Ks[4];
-    //    GLfloat Ke[4];
-    //    GLfloat d;
-    //    GLint illum;
-    //    GLfloat Ns;
-    //    GLfloat Ni;
-//
-//    //    Material(char *path)
-//    //    {
-//    //        parse(path);
-//    //    }
-//
-//    //    void parse(char *path)
-//    //    {
-//    //        FILE *file = fopen(path, "r");
-//    //        char lineHeader[1000];
-//    //        while (fscanf(file, "%s", lineHeader) != EOF)
-//    //        {
-//    //            if (strcmp(lineHeader, "Ka") == 0)
-//    //            {
-//    //                fscanf(file, "%f %f %f\n", &Ka[0], &Ka[1], &Ka[2]);
-//    //                Ka[3] = 1.0;
-//    //            }
-//    //            else if (strcmp(lineHeader, "Kd") == 0)
-//    //            {
-//    //                fscanf(file, "%f %f %f\n", &Kd[0], &Kd[1], &Kd[2]);
-//    //                Kd[3] = 1.0;
-//    //            }
-//    //            else if (strcmp(lineHeader, "Ks") == 0)
-//    //            {
-//    //                fscanf(file, "%f %f %f\n", &Ks[0], &Ks[1], &Ks[2]);
-//    //                Ks[3] = 1.0;
-//    //            }
-//    //            else if (strcmp(lineHeader, "d") == 0)
-//    //                fscanf(file, "%f\n", &d);
-//    //            else if (strcmp(lineHeader, "illum") == 0)
-//    //                fscanf(file, "%d\n", &illum);
-//    //            else if (strcmp(lineHeader, "Ns") == 0)
-//    //                fscanf(file, "%f\n", &Ns);
-//    //            else if (strcmp(lineHeader, "Ni") == 0)
-//    //                fscanf(file, "%f\n", &Ni);
-//    //        }
-//    //        fclose(file);
-//    //    }
-    //};
+    
 
     
 
@@ -224,6 +175,56 @@ public:
         }
 
         
+    }
+
+    void hitbox(){
+
+        glBegin(GL_QUADS);
+        glVertex3f(min_x,min_y,max_z);
+        glVertex3f(max_x,min_y,max_z);
+        glVertex3f(max_x,max_y,max_z);
+        glVertex3f(min_x,max_y,max_z);
+        glEnd();
+
+        glBegin(GL_QUADS);
+        glVertex3f(min_x,min_y,max_z);
+        glVertex3f(max_x,min_y,max_z);
+        glVertex3f(max_x,min_y,min_z);
+        glVertex3f(min_x,max_y,max_z);
+        glEnd();
+
+
+        glBegin(GL_QUADS);
+        glVertex3f(min_x,min_y,min_z);
+        glVertex3f(max_x,min_y,min_z);
+        glVertex3f(max_x,max_y,max_z);
+        glVertex3f(min_x,max_y,max_z);
+        glEnd();
+
+
+        //glBegin(GL_QUADS);
+        //glVertex3f(min_x,min_y,min_z);
+        //glVertex3f(max_x,min_y,min_z);
+        //glVertex3f(max_x,max_y,max_z);
+        //glVertex3f(min_x,max_y,max_z);
+        //glEnd();
+
+
+        //glBegin(GL_QUADS);
+        //glVertex3f(min_x,min_y,min_z);
+        //glVertex3f(max_x,min_y,min_z);
+        //glVertex3f(max_x,max_y,max_z);
+        //glVertex3f(min_x,max_y,max_z);
+        //glEnd();
+
+
+        //glBegin(GL_QUADS);
+        //glVertex3f(min_x,min_y,min_z);
+        //glVertex3f(max_x,min_y,min_z);
+        //glVertex3f(max_x,max_y,max_z);
+        //glVertex3f(min_x,max_y,max_z);
+        //glEnd();
+
     }
 
     float get_min_x(){

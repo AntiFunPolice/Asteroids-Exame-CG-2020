@@ -13,43 +13,37 @@ using namespace std;
 
 int min_width = 1000, min_height = 1000;
 float zoom = 1, zoom_increment = 0.1;
+
 Nave *nave;
-Obj *objects[30];
 GameManager *game;
-int n_objects = 0;
+
 int active_camera = 1;
 bool game_start=true;
 int colliding_with=-1;
+
 bool _ri = false;
 bool _le = false;
 bool _w = false;                                                                            //  <<-global->> bool for whether the w key is down
 bool _a = false;                                                                            //  <<-global->> bool for whether the a key is down
 bool _s = false;                                                                            //  <<-global->> bool for whether the s key is down
 bool _d = false;                                                                            //  <<-global->> bool for whether the d key is down
-bool _q = false;                                                                            //  <<-global->> bool for whether the q key is down
-bool _e = false;                                                                            //  <<-global->> bool for whether the e key is down
-                                                                      
+
+
+bool _space = false;                                                                  
 bool fuel = true;
-int fuel_counter=0;    
+int fuel_counter=0,beam_counter=0;    
 bool colliding = false;
+bool beam_ready = true;
 	
 
 
-void create_objects()
-{	
+void create_objects(){	
 
-
-    nave = new Nave();
     game = new GameManager();
-  	//objects[n_objects++] = new Obj("espaco");
-    //objects[n_objects++] = new Obj("asteroid");
-    //objects[n_objects++] = new Obj("beams");
-    //objects[n_objects++] = new Obj("door");
-    //objects[n_objects++] = new Obj("chao");
-    
+  	nave = game->nave;
 }
-void init_lights()
-{
+
+void init_lights(){
 
     glEnable(GL_LIGHTING);
 
@@ -62,7 +56,7 @@ void init_lights()
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
 
-    GLfloat light_pos[] = {0.0, 1.0, 1.0, 0.0};
+    GLfloat light_pos[] = {0.0, 0, 1, 0.0};
     glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
 
     glShadeModel(GL_SMOOTH);
@@ -95,148 +89,78 @@ void set_camera(GLdouble eyeX, GLdouble eyeY, GLdouble eyeZ, GLdouble centerX, G
 }
 
 void camera(){
+
     switch (active_camera)
     {
         case 1:
             set_camera(nave->xx , 7, nave->zz+1 , nave->xx, nave->yy, nave->zz-3, 0.0, 1, 0);
             break;
         case 2:
-            set_camera(nave->xx , 2, nave->zz , nave->xx, nave->yy, nave->zz-3, 0.0, 1, 0);
+            set_camera(nave->xx , 16, nave->zz , nave->xx, nave->yy, nave->zz-3, 0.0, 1, 0);
             break;
 
         case 3:
-           set_camera(nave->xx , 0.5+ nave->yy, 1+nave->zz , nave->xx, nave->yy, nave->zz-3, 0.0, 1, 0);
+           set_camera((nave->xx - 10*nave->x_Camera3d) ,  0.7 ,(nave->zz-10*nave->z_Camera3d) , nave->xx + nave->x_Camera3d, 0, nave->zz +nave->z_Camera3d , 0, 1, 0);
+            break;
+        case 4:
+           set_camera( (nave->xx + 10*nave->x_Camera3d) ,  0.6 ,(nave->zz+10*nave->z_Camera3d) , nave->xx - nave->x_Camera3d, 0, nave->zz -nave->z_Camera3d , 0, 1, 0);
+            break;
+
+        case 5:
+           set_camera( 11, 11, 11, nave->xx, nave->yy, nave->zz , 0, 1, 0);
+            break;
+
+        case 6:
+           set_camera( -11 , -11 ,-11 , nave->xx, nave->yy, nave->zz , 0, 1, 0);
             break;
       
     }
 }
 
-//void camerachaser(){
-    //set_camera(nave->xx , 7, nave->zz , nave->xx, nave->yy, nave->zz-3, 0.0, 1, 0);
-  //  set_camera(nave->xx , 7, nave->zz+1 , nave->xx, nave->yy, nave->zz-3, 0.0, 1, 0);
-//}
-
-
-
-void collision_solver(){
-    
-    //bool Axis_x,Axis_y;
-    float increment=0;
-    //float player_min_x= nave->get_min_x();
-    float player_min_y= nave->get_min_y();
-    //float player_max_x= nave->get_max_x();
-    float player_max_y= nave->get_max_y(); 
-
-     
-    //float object_min_x = objects[colliding_with]->get_min_x();
-    float object_min_y = objects[colliding_with]->get_min_y()-1;
-    //float object_max_x = objects[colliding_with]->get_max_x();
-    float object_max_y = objects[colliding_with]->get_max_y()-1;
-
-    //float object_height = abs(object_max_y) - abs(object_min_y);
-    //float player_height = abs(player_max_y) - abs(player_min_y);
-
-   // if(player_max_y>object_max_y){
-        
-        increment = abs(object_max_y)-abs(player_min_y);
-        nave->yy   -= increment-0.01;
-        nave->max_y -=increment-0.01;
-        nave->min_y -=increment-0.01;
-        
-
-    //}else if(player_max_y<object_max_y){
-        
-       //increment =abs(player_max_y) - abs(object_min_y);
-       //nave->yy+=increment;
-       //nave->max_y-=increment;
-       //nave->min_y-=increment;
-        
-    //}
-
-    
-
-
-}
-
-void colision_detection(){
-	
-    float player_min[2],player_max[2];
-    float object_min[2],object_max[2];
-    int collidings = 0;
-    player_min[0]= nave->get_min_x();
-    player_min[1]= nave->get_min_y();
-    player_max[0]= nave->get_max_x();
-    player_max[1]= nave->get_max_y(); 
-
-    for (int i = 0; i < n_objects; ++i){
-    	object_min[0] = objects[i]->get_min_x();
-    	object_min[1] = objects[i]->get_min_y();
-    	object_max[0] = objects[i]->get_max_x();
-    	object_max[1] = objects[i]->get_max_y();
-    	
-    	if((player_min[0] <= object_max[0] && player_max[0] >= object_min[0]) && 
-    	   (player_min[1] <= object_max[1]-1 && player_max[1] >= object_min[1]-1)){
-			collidings++;
-            colliding_with=i;
-		}
-		
-    }
-
-    if (collidings>0){
-			colliding = true;
-           
-            collision_solver();
-
-	}else{
-		colliding = false;
-        colliding_with=-1;
-    }
-
-    
-
-}
-
-
-
-void move_hit_box_x(float increment_x){
-	nave->min_x =nave->min_x  + increment_x;
-	nave->max_x =nave->max_x  + increment_x;
-}
-
-void move_hit_box_y(float increment_y){
-	nave->min_y =nave->min_y  + increment_y;
-	nave->max_y =nave->max_y  + increment_y;
-}
 
 void trust(){
 	nave->xx += nave->speedx;
 	nave->zz += nave->speedz;
 } 
 
+void get_3d_Camera(){
+   
+    float xsda = nave->rot;
+    float div  = xsda/360;
+    float rem = (xsda - ((floor(div)+27)*360)-90);
+ 
+    
+    
+
+    nave->x_Camera3d = cos(rem*PI /180)/10;
+    nave->z_Camera3d = sin(rem*PI /180)/10;
+}
+
 void vectorget(){
 	float xsda = nave->rot;
     float div  = xsda/360;
-    float rem = (xsda - ((floor(div)+27)*360)-90);
-
-    float origin_x = nave->xx;
-    float origin_z = nave->zz;
-    
-    
+    float rem = (xsda - ((floor(div))*360)-90);
+ 
     nave->speedx=0;
-   	nave->speedz=0;
-    
-
-   	nave->speedx += cos(rem*PI /180)/10;
-    nave->speedz += sin(rem*PI /180)/10;
+    nave->speedz=0;
+   	nave->speedx += cos(rem*PI /180)/30;
+    nave->speedz += sin(rem*PI /180)/30;
 }
 
 
 void movement2(){
 
-	 if(_a||_d||_w||_s||_q||_e){
-      
+	 if(_a||_d||_w||_s||_space){
+        game->game_Start=true;
 
-          if(_w){
+        if(_space){
+            if(beam_ready){
+                game->shoting= true;
+                beam_ready=false;
+            }
+        }
+
+        if(_w){
         
           	if(fuel){
             	vectorget();
@@ -244,63 +168,27 @@ void movement2(){
    			}
         }
 
+        if(_s){
+            
+            nave->speedx/=1.02;
+            nave->speedz/=1.02;
+        }
+
         
 
         if(_a){
-    		nave->rot -= 5;
+    		nave->rot -= 2;
     		
     	}
 
    	 	if(_d){
-   	 		nave->rot += 5;
-   	 			
+   	 		nave->rot += 2;		
    	 	}
     }  
 }
 
 
-void get_player_box_display(){
-	float min_x = nave->get_min_x();
-	float min_y = nave->get_min_y();
-	float max_x = nave->get_max_x();
-	float max_y = nave->get_max_y();
 
-	if(colliding){
-		glColor3f(1,0,0);
-	}else{
-		glColor3f(1,1,1);
-	}
-
-	//glBegin(GL_QUADS);
-    //glVertex3f(min_x,min_y,min_z);
-    //glVertex3f(max_x,min_y,);
-    //glVertex3f(max_x,max_y);
-    //glVertex3f(min_x,max_y);
-
-   	
-
-    glEnd();
-}
-
-void get_map_box_display(){
-	
-	for (int i = 0; i < n_objects; i++){
-     	
-		float min_x = objects[i]->get_min_x();
-		float min_y = objects[i]->get_min_y();
-		float max_x = objects[i]->get_max_x();
-		float max_y = objects[i]->get_max_y();
-		printf("min: %f max: %f\n",min_x,max_x);
-
-	    //glBegin(GL_QUADS);
-	    //glVertex2f(min_x,min_y);
-	    //glVertex2f(max_x,min_y);
-	    //glVertex2f(max_x,max_y);
-	    //glVertex2f(min_x,max_y);
-    	//glEnd();
-
-   }
-}
 
 void display_text_color(string text, GLint y,bool x){	
 	if(x)
@@ -345,20 +233,13 @@ void display_labels(){
 
     int label_box_height = 200, n_text = 1;
 
-    //glColor4f(0.0, 0.0, 0.0, 0.5);
-    //glBegin(GL_QUADS);
-    //glVertex2i(370, 10);
-    //glVertex2i(10, 8);
-    //glVertex2i(10, label_box_height);
-    //glVertex2i(370, label_box_height);
-    //glEnd();
-
-    //if(fuel){
-    	
-   // }else
-
+    int points = game->points;
+    int lives = game->lives;
     display_text("Labels (L): Showing", label_box_height - 25 * n_text++);
+    display_text(" Lifes "+to_string(lives),label_box_height - 25 * n_text++);
+    display_text(" Ponts: " +  to_string(points), label_box_height - 25 * n_text++);
     display_text_color(" Thrust: " +  string(fuel ? "Ready" : "Cooldown"), label_box_height - 25 * n_text++,fuel);
+    display_text_color(" Beam: " +  string(beam_ready ? "Ready" : "Cooldown"), label_box_height - 25 * n_text++,beam_ready);
     display_text("Exit program (ESC)", 20);
 
 
@@ -435,6 +316,12 @@ if(fuel_counter==100){
 	fuel=true;
 	fuel_counter=0;
 }
+
+beam_counter++;
+if(beam_counter==50){
+    beam_ready=true;
+    beam_counter=0;
+}
 // Limpa os "buffers"
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 // Indica que as próximas operações de matrizes serão feitas sobre
@@ -445,36 +332,23 @@ if(fuel_counter==100){
 // ---
 // Os objetos serão desenhados e animados aqui
 // ---
-   
+    
     camera();
     
 
-    glPushMatrix();
-   
-    glRotatef(180,0,1,0);
-    glRotatef(180,0,0,1);
-	game->display(); 
-
-    glPopMatrix();  
+    game->display();  
     
     movement2();
     
     glColor3f(1, 1, 1);
  	 //axis_diplay();
     trust();
-    nave->display();
-
+    //nave->display();
+    get_3d_Camera();
    
-   //printf("%d\n", asteroides);
+    //game->nave->obj->hitbox();
     
     
-    //glTranslatef(-nave->xx,-nave->yy,-nave->zz);
-   	//for (int i = 0; i < n_objects; i++)
-   	//     objects[i]->display();
-   	 
-    //get_map_box_display();
-    
-     
 
     //colision_detection();
 
@@ -516,8 +390,9 @@ void keyboard(unsigned char key, int x, int y){
         case 'a': _a = true; break;
         case 's': _s = true; break;
         case 'd': _d = true; break;
-        case 'q': _q = true; break;
-        case 'e': _e = true; break;
+        //case 'q': _q = true; break;
+        //case 'e': _e = true; break;
+        case ' ': _space = true; break;
        
 
     }
@@ -534,8 +409,9 @@ void keyboardup(unsigned char key, int x, int y){
         case 'a': _a = false; break;
         case 's': _s = false; break;
         case 'd': _d = false; break;
-        case 'q': _q = false; break;
-        case 'e': _e = false; break;
+       // case 'q': _q = false; break;
+       // case 'e': _e = false; break;
+        case ' ': _space = false; break;
      
     }
 }
@@ -554,6 +430,15 @@ void keyboard_special(int key, int, int)
     case GLUT_KEY_F3:
         active_camera = 3;
         break;
+    case GLUT_KEY_F4:
+        active_camera = 4;
+        break;
+    case GLUT_KEY_F5:
+        active_camera = 5;
+        break;
+    case GLUT_KEY_F6:
+        active_camera = 6;
+        break;
  
    // case GLUT_KEY_RIGHT:
 //   //     _ri = true;
@@ -566,7 +451,7 @@ void keyboard_special(int key, int, int)
    //     break;
     
     }
-}
+} 
 
 
 
