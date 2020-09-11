@@ -1,5 +1,4 @@
-#include <time.h>
-#define PI 3.14159265
+
 class Asteroid
 {
 public:
@@ -13,22 +12,17 @@ public:
     float speedx=0,speedz=0;
     float increment_rot=1;
     float dead=false;
+
+    float min_x,min_y,min_z,max_x,max_y,max_z;
     
-   
-    //float asteroids_children[][];
-   // bool game_start = false;
- 
 
     Asteroid(){
-        
-        
-        if(type=1){ 
-            obj = new Obj("asteroid");
-            
-       }else{
-            obj = new Obj("asteroid_small");
-           
-        }
+        obj = new Obj("asteroid");       
+    }
+
+
+    Asteroid(int x){
+         get_Increments();
     }
 
     ~Asteroid(){
@@ -39,7 +33,6 @@ public:
 
     void get_Increments(){
         
-
         int pick = (rand()%3)+1;
         if(pick==1){
             rotx=1;
@@ -69,22 +62,21 @@ public:
     
         }
     }
+
+    void pre_display(){
+        check_Limits();
+       
+    }
+
    
 
-    void display(){
-       check_Limits();
-        get_Increments();
-        glPushMatrix();
-        glTranslatef(posx,posy,posz);
-        glRotatef(increment_rot,rotx,roty,rotz);
-        obj->display();
-        glPopMatrix();
-        //adicionar incrementos
-         
+    void asteroid_add_mov(){
         increment_rot+=1;
         posx+=(speedx/600);
         posz+=(speedz/600);
+    }
 
     
-    }
+   
+
 };

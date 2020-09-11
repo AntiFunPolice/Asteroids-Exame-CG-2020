@@ -1,10 +1,10 @@
-#include <time.h>
+
 #define PI 3.14159265
+
 class Beam
 {
 public:
     
-    Obj *obj;
     int type = 1;
     float posx=0,posy=0,posz=0;
     float dir_x = 0,dir_y = 0,dir_z = 0;
@@ -16,15 +16,7 @@ public:
  
 
     Beam(){
-        get_Increments();
-        obj = new Obj("beams");
-
-           
-    }
-
-    ~Beam(){
-
-        delete obj;
+        get_Increments();       
     }
 
 
@@ -42,12 +34,12 @@ public:
     void check_Limits(){
         if(abs(posx) > 16||abs(posz) > 16){
              
-            out=true;
+            
         }
     }
    
 
-    void display(){
+    void display(Obj *obj){
         check_Limits();
         get_Increments();
         glPushMatrix();

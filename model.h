@@ -9,6 +9,7 @@ class Obj
 float min_x,min_y,min_z,max_x,max_y,max_z;
 
 
+
 private:
     class Model
     {
@@ -97,46 +98,34 @@ private:
     }
 
 public:
-    
+    float posx,posy,posz;
+    float incrementx,incrementy,incrementz;
 
     Model *model;
    // Material *material;
     unsigned int texture;
 
-    Obj(char *name)
-    {
+    Obj(char *name){
         char model_path[50] = "assets/";
-        //char material_path[50] = "assets/";
         char texture_path[50] = "assets/";
 
         strcat(model_path, name);
-       // strcat(material_path, name);
         strcat(texture_path, name);
 
         strcat(model_path, ".obj");
-        //strcat(material_path, ".mtl");
         strcat(texture_path, ".png");
 
         model = new Model(model_path);
-        //material = new Material(material_path);
         load_texture(texture_path);
 
         min_max_find();
     }
 
-     Obj(char *model_path, char *texture_path)
-    {
-        
-        model = new Model(model_path);
-        
-        load_texture(texture_path);
-        min_max_find();
-    }
+    
 
-    ~Obj()
-    {
+    ~Obj(){
         delete model;
-        //delete material;    
+            
     }
 
     void min_max_find(){
@@ -177,55 +166,6 @@ public:
         
     }
 
-    void hitbox(){
-
-        glBegin(GL_QUADS);
-        glVertex3f(min_x,min_y,max_z);
-        glVertex3f(max_x,min_y,max_z);
-        glVertex3f(max_x,max_y,max_z);
-        glVertex3f(min_x,max_y,max_z);
-        glEnd();
-
-        glBegin(GL_QUADS);
-        glVertex3f(min_x,min_y,max_z);
-        glVertex3f(max_x,min_y,max_z);
-        glVertex3f(max_x,min_y,min_z);
-        glVertex3f(min_x,max_y,max_z);
-        glEnd();
-
-
-        glBegin(GL_QUADS);
-        glVertex3f(min_x,min_y,min_z);
-        glVertex3f(max_x,min_y,min_z);
-        glVertex3f(max_x,max_y,max_z);
-        glVertex3f(min_x,max_y,max_z);
-        glEnd();
-
-
-        //glBegin(GL_QUADS);
-        //glVertex3f(min_x,min_y,min_z);
-        //glVertex3f(max_x,min_y,min_z);
-        //glVertex3f(max_x,max_y,max_z);
-        //glVertex3f(min_x,max_y,max_z);
-        //glEnd();
-
-
-        //glBegin(GL_QUADS);
-        //glVertex3f(min_x,min_y,min_z);
-        //glVertex3f(max_x,min_y,min_z);
-        //glVertex3f(max_x,max_y,max_z);
-        //glVertex3f(min_x,max_y,max_z);
-        //glEnd();
-
-
-        //glBegin(GL_QUADS);
-        //glVertex3f(min_x,min_y,min_z);
-        //glVertex3f(max_x,min_y,min_z);
-        //glVertex3f(max_x,max_y,max_z);
-        //glVertex3f(min_x,max_y,max_z);
-        //glEnd();
-
-    }
 
     float get_min_x(){
         return min_x;
@@ -254,22 +194,13 @@ public:
 
    
 
-    void display()
-    {   
+    void display(){   
 
-        //min_max_find();
-        
-        //printf(" min_x: %f max_x:%f min_y: %f max_y: %f\n", min_x,max_x,min_y,max_y);
-
+  
         glBindTexture(GL_TEXTURE_2D, texture);
         glEnable(GL_TEXTURE_2D);
         glBegin(GL_TRIANGLES);
-       // glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, material->Ka);
-       // glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, material->Kd);
-       // glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material->Ks);
-       // glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, material->Ns);
-
-
+    
 
 
         for (int i = 0; i < model->n_f; i++)
@@ -285,15 +216,9 @@ public:
         
         glEnd();
 
-       //printf("no modelo min_x: %f max_x:%f min_y: %f max_y: %f\n", min_x,max_x,min_y,max_y);
 
         glDisable(GL_TEXTURE_2D);
 
-        //glBegin(GL_QUADS);
-        //glVertex2f(min_x,min_y);
-        //glVertex2f(max_x,min_y);
-        //glVertex2f(max_x,max_y);
-        //glVertex2f(min_x,max_y);
-        //glEnd();
+       
     }
 };
