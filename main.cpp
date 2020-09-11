@@ -12,28 +12,27 @@ using namespace std;
 #define PI 3.14159265
 
 int min_width = 1000, min_height = 1000;
+int wireframe = 0, antialiasing = 1, showing_labels = 1, lighting = 1, gouroud= 1;
 float zoom = 1, zoom_increment = 0.1;
+
 
 Nave *nave;
 GameManager *game;
+Asteroid *asteroid_light;
+
 
 int active_camera = 1;
 bool game_start=true;
-int colliding_with=-1;
-
-bool _ri = false;
-bool _le = false;
-bool _w = false;                                                                            //  <<-global->> bool for whether the w key is down
-bool _a = false;                                                                            //  <<-global->> bool for whether the a key is down
-bool _s = false;                                                                            //  <<-global->> bool for whether the s key is down
-bool _d = false;                                                                            //  <<-global->> bool for whether the d key is down
-
+bool _w = false;                                                                            
+bool _a = false;                                                                            
+bool _s = false;                                                                            
+bool _d = false;                                                                            
 
 bool _space = false;                                                                  
 bool fuel = true;
 int fuel_counter=0,beam_counter=0;    
-bool colliding = false;
 bool beam_ready = true;
+bool action=false;
 	
 
 
@@ -43,23 +42,33 @@ void create_objects(){
   	nave = game->nave;
 }
 
+
+
 void init_lights(){
 
     glEnable(GL_LIGHTING);
 
-    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
 
     GLfloat light_ambient[] = {0.2, 0.2, 0.2, 1.0};
     GLfloat light_diffuse[] = {1.0, 1.0, 1.0, 0.8};
     GLfloat light_specular[] = {1.0, 1.0, 1.0, 0.8};
-    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+    glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, light_specular);
 
-    GLfloat light_pos[] = {0.0, 0, 1, 0.0};
-    glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
+    GLfloat lightPosition[] = {0.0, 0, 1, 0.0};
+    glLightfv(GL_LIGHT1, GL_POSITION, lightPosition);
+
+
 
     glShadeModel(GL_SMOOTH);
+}
+
+void move_light(){
+    
+    GLfloat lightPosition[] = {0.0, 0, 1, 0.0};
+    glLightfv(GL_LIGHT1, GL_POSITION, lightPosition);
 }
 
 void init(){
@@ -129,9 +138,6 @@ void get_3d_Camera(){
     float div  = xsda/360;
     float rem = (xsda - ((floor(div)+27)*360)-90);
  
-    
-    
-
     nave->x_Camera3d = cos(rem*PI /180)/10;
     nave->z_Camera3d = sin(rem*PI /180)/10;
 }
@@ -148,7 +154,7 @@ void vectorget(){
 }
 
 
-void movement2(){
+void movement(){
 
 	 if(_a||_d||_w||_s||_space){
         game->game_Start=true;
@@ -168,27 +174,15 @@ void movement2(){
    			}
         }
 
-        if(_s){
-            
-            nave->speedx/=1.02;
-            nave->speedz/=1.02;
-        }
-
-        
-
         if(_a){
     		nave->rot -= 2;
     		
     	}
-
    	 	if(_d){
    	 		nave->rot += 2;		
    	 	}
     }  
 }
-
-
-
 
 void display_text_color(string text, GLint y,bool x){	
 	if(x)
@@ -203,9 +197,6 @@ void display_text_color(string text, GLint y,bool x){
         glutBitmapCharacter(font, c);
     }
 }
-
-
-
 
 void display_text(string text, GLint y){	
 		
@@ -235,14 +226,13 @@ void display_labels(){
 
     int points = game->points;
     int lives = game->lives;
-    display_text("Labels (L): Showing", label_box_height - 25 * n_text++);
-    display_text(" Lifes "+to_string(lives),label_box_height - 25 * n_text++);
-    display_text(" Ponts: " +  to_string(points), label_box_height - 25 * n_text++);
-    display_text_color(" Thrust: " +  string(fuel ? "Ready" : "Cooldown"), label_box_height - 25 * n_text++,fuel);
-    display_text_color(" Beam: " +  string(beam_ready ? "Ready" : "Cooldown"), label_box_height - 25 * n_text++,beam_ready);
+    display_text("Game Info:", label_box_height - 25 * n_text++);
+    display_text("- Lifes "+to_string(lives),label_box_height - 25 * n_text++);
+    display_text("- Ponts: " +  to_string(points), label_box_height - 25 * n_text++);
+    display_text_color("- Thrust: " +  string(fuel ? "Ready" : "Cooldown"), label_box_height - 25 * n_text++,fuel);
+    display_text_color("- Beam: " +  string(beam_ready ? "Ready" : "Cooldown"), label_box_height - 25 * n_text++,beam_ready);
+    display_text("Right Click To View Menu", label_box_height - 25 * n_text++);
     display_text("Exit program (ESC)", 20);
-
-
 
     glPopMatrix();
     glMatrixMode(GL_PROJECTION);
@@ -253,59 +243,32 @@ void display_labels(){
     glEnable(GL_LIGHTING);
 }
 
-void axis_diplay(){
-	
-	glDisable(GL_LIGHTING);
-	glColor3f(1.0,0.0,0.0); // red x
-    glBegin(GL_LINES);
-    // x aix
- 
-    glVertex3f(-4.0, 0.0f, 0.0f);
-    glVertex3f(4.0, 0.0f, 0.0f);
- 
-    // arrow
-    glVertex3f(4.0, 0.0f, 0.0f);
-    glVertex3f(3.0, 1.0f, 0.0f);
- 
-    glVertex3f(4.0, 0.0f, 0.0f);
-    glVertex3f(3.0, -1.0f, 0.0f);
-    glEnd();
-    glFlush();
- 
- 
- 
-    // y 
-    glColor3f(0.0,1.0,0.0); // green y
-    glBegin(GL_LINES);
-    glVertex3f(0.0, -4.0f, 0.0f);
-    glVertex3f(0.0, 4.0f, 0.0f);
- 
-    // arrow
-    glVertex3f(0.0, 4.0f, 0.0f);
-    glVertex3f(1.0, 3.0f, 0.0f);
- 
-    glVertex3f(0.0, 4.0f, 0.0f);
-    glVertex3f(-1.0, 3.0f, 0.0f);
-    glEnd();
-    glFlush();
- 
-    // z 
-    glColor3f(0.0,0.0,1.0); // blue z
-    glBegin(GL_LINES);
-    glVertex3f(0.0, 0.0f ,-4.0f );
-    glVertex3f(0.0, 0.0f ,4.0f );
- 
-    // arrow
-    glVertex3f(0.0, 0.0f ,4.0f );
-    glVertex3f(0.0, 1.0f ,3.0f );
- 
-    glVertex3f(0.0, 0.0f ,4.0f );
-    glVertex3f(0.0, -1.0f ,3.0f );
-    glEnd();
 
-    glFlush();
 
-    glEnable(GL_LIGHTING);
+void apply_menu_options()
+{
+    if (wireframe)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    else
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    if (lighting)
+        glEnable(GL_LIGHTING);
+    else
+        glDisable(GL_LIGHTING);
+
+    if (gouroud)
+        glShadeModel(GL_SMOOTH);
+    else
+        glShadeModel(GL_FLAT);
+
+    if (antialiasing)
+    {
+        glEnable(GL_MULTISAMPLE);
+        glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
+    }
+    else
+        glDisable(GL_MULTISAMPLE);
 }
 
 void display(){
@@ -324,37 +287,25 @@ if(beam_counter==50){
 }
 // Limpa os "buffers"
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 // Indica que as próximas operações de matrizes serão feitas sobre
 // a matriz "ModelView"
     glMatrixMode(GL_MODELVIEW);
+
 // Limpa a matriz "ModelView" (transforma-a na matriz identidade)
     glLoadIdentity();
 // ---
 // Os objetos serão desenhados e animados aqui
 // ---
-    
+    get_3d_Camera();
     camera();
     
-
+    apply_menu_options();
+    game->action =action;
     game->display();  
-    
-    movement2();
-    
+    movement();
     glColor3f(1, 1, 1);
- 	 //axis_diplay();
     trust();
-    //nave->display();
-    get_3d_Camera();
-   
-    //game->nave->obj->hitbox();
-    
-    
-
-    //colision_detection();
-
-     //get_player_box_display();
-     
-
   	display_labels();
 // Troca os dois "buffers" de "display", e imprime na janela o
 // atualizado. Substitui o "glFlush", quando em modo "GLUT_DOUBLE".
@@ -376,9 +327,6 @@ void call_display(int)
     glutTimerFunc(1000 / 120, call_display, 0);
 }
 
-//<-------------------------------------------------------------------------------------------------------------------------------------------------------------->
-//<-------------------------------------------------------keyboard function: called each key press--------------------------------------------------------------->
-//<-------------------------------------------------------------------------------------------------------------------------------------------------------------->
 
 void keyboard(unsigned char key, int x, int y){
     if(key == 0x1B)(*(int*)0) = 69; //if esc is pressed crash program
@@ -393,15 +341,12 @@ void keyboard(unsigned char key, int x, int y){
         //case 'q': _q = true; break;
         //case 'e': _e = true; break;
         case ' ': _space = true; break;
+        case 'p': action=true; break;
        
 
     }
 }
 
-
-//<-------------------------------------------------------------------------------------------------------------------------------------------------------------->
-//<------------------------------------------------------keyboard function: called each key release-------------------------------------------------------------->
-//<-------------------------------------------------------------------------------------------------------------------------------------------------------------->
 
 void keyboardup(unsigned char key, int x, int y){
     switch(key){
@@ -412,6 +357,7 @@ void keyboardup(unsigned char key, int x, int y){
        // case 'q': _q = false; break;
        // case 'e': _e = false; break;
         case ' ': _space = false; break;
+        case 'p':action=false; break;
      
     }
 }
@@ -439,21 +385,40 @@ void keyboard_special(int key, int, int)
     case GLUT_KEY_F6:
         active_camera = 6;
         break;
- 
-   // case GLUT_KEY_RIGHT:
-//   //     _ri = true;
-//   //     nave->rot += 0.9;
-//   //     break;
-//
-   // case GLUT_KEY_LEFT:
-   //     _le = true;
-   //     nave->rot -= 0.9;
-   //     break;
-    
     }
 } 
 
 
+
+void menu(int value)
+{
+    switch (value)
+    {
+    case 1:
+        wireframe = !wireframe;
+        break;
+    case 2:
+        lighting = !lighting;
+        break;
+    case 3:
+        gouroud = !gouroud;
+        break;
+    case 4:
+        antialiasing = !antialiasing;
+        break;
+    }
+}
+
+
+void init_menu()
+{
+    glutCreateMenu(menu);
+    glutAddMenuEntry("Switch Flat / Wireframe representation"+ wireframe, 1);
+    glutAddMenuEntry("Toggle Lighting", 2);
+    glutAddMenuEntry("Toggle Gouraud Shading:", 3);
+    glutAddMenuEntry("Toggle Antialiasing (MSAA)", 4);
+    glutAttachMenu(GLUT_RIGHT_BUTTON);
+}
 
 
 int main(int argc, char **argv)
@@ -484,6 +449,7 @@ int main(int argc, char **argv)
     glutKeyboardFunc(keyboard);
     glutKeyboardUpFunc(keyboardup);
     glutSpecialFunc(keyboard_special);
+    init_menu();
 // Inicia o ciclo de vida do GLUT
     glutMainLoop();
     return 1;

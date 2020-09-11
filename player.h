@@ -16,12 +16,6 @@ public:
     Nave()
     {
         obj = new Obj("nave_smaller_2");
-        //min_x = obj->get_min_x();
-        //min_y = obj->get_min_y();
-        //max_x = obj->get_max_x();
-        //max_y = obj->get_max_y();
-        //min_z = obj->get_min_z();
-        //max_z = obj->get_max_z();
     }
 
     ~Nave()

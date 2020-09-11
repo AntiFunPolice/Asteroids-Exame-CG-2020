@@ -26,6 +26,7 @@ public:
     bool infinity=false;
     int killed =0;
     bool deleted= false;
+    bool action = false;
     
 
     float player_min[2],player_max[2];
@@ -172,8 +173,8 @@ public:
         asteroids_number++;
 
         asteroids[asteroids_number] = new Asteroid(0);
-        asteroids[asteroids_number]->posx      = (oneor2==0 ? (rand()%(15-13)+13) * (rand()%2 ==1 ? 1 : -1) : rand()%15 * (rand()%2 ==1 ? 1 : -1) );
-        asteroids[asteroids_number]->posz      = (oneor2==1 ? (rand()%(15-13)+13) * (rand()%2 ==1 ? 1 : -1) : rand()%15 * (rand()%2 ==1 ? 1 : -1) );
+        asteroids[asteroids_number]->posx      = (oneor2==1 ? (rand()%(15-13)+13) * (rand()%2 ==1 ? 1 : -1) : rand()%15 * (rand()%2 ==1 ? 1 : -1) );
+        asteroids[asteroids_number]->posz      = (oneor2==0 ? (rand()%(15-13)+13) * (rand()%2 ==1 ? 1 : -1) : rand()%15 * (rand()%2 ==1 ? 1 : -1) );
         asteroids[asteroids_number]->speedx    = ((rand()%10 +1))*(rand()%2 ==1 ? 1 : -1);
         asteroids[asteroids_number]->speedz    = ((rand()%10 +1))*(rand()%2 ==1 ? 1 : -1);
     
@@ -333,52 +334,219 @@ public:
     
         printf("Numero Asteroides %d  Numero Asteroides Vivos %d killed %d\n", asteroids_number,living_asteroids,killed);
     
-    
-        if(!infinity)
-            generate_lvls();
-            
-                
-        if(infinity){
-           
-        
-            if(killed>0){
-                if(asteroids_number<40){
-                    generate_infinity();
-                }else
-                    generate_one();
-                killed=0;
-            }
-        }
-    
-        if(game_Start){
-            player_asteroid_colision_detection();
-                        
+        if(!game_Ends){
+            if(!infinity)
+                generate_lvls();
                     
-            if(beam_number>0)
-                beam_asteroid_colision_detection();
                         
-            for (int i = 0; i < asteroids_number; i++){
-                if(!asteroids[i]->dead){
-                
-                    asteroids[i]->pre_display();
-                    glPushMatrix();
-                    glTranslatef(asteroids[i]->posx,0,asteroids[i]->posz);
-                    glRotatef( asteroids[i]->increment_rot,asteroids[i]->rotx,asteroids[i]->roty,asteroids[i]->rotz);
-                    asteroid->obj->display();
-                    glPopMatrix();
-                    asteroids[i]->asteroid_add_mov();
+            if(infinity){
+               
+            
+                if(killed>0){
+                    if(asteroids_number<40){
+                        generate_infinity();
+                    }else
+                        generate_one();
+                    killed=0;
                 }
             }
-                        
-            for (int i = 0; i < beam_number; i++){
-                if(!beams[i]->out)
-                    beams[i]->display(beam);      
+
+            if (!game_Start)
+        {
+            glDisable(GL_LIGHTING);
+            glDisable(GL_DEPTH_TEST);
+            glDisable(GL_TEXTURE_2D);
+            glMatrixMode(GL_PROJECTION);
+            glPushMatrix();
+            glLoadIdentity();
+            gluOrtho2D(0, 1000, 0, 1000);
+            glMatrixMode(GL_MODELVIEW);
+            glPushMatrix();
+            glLoadIdentity();
+            glBegin(GL_QUADS);
+            glColor4f(0.1, 0.1, 0.1, 0.9);
+            glVertex2i(100, 360);
+            glVertex2i(100, 600);
+            glVertex2i(900, 600);
+            glVertex2i(900, 360);
+            glEnd();
+            glColor3f(1.0, 0.0, 0.0);
+            string text = "Welcome to Asteroides!";
+            void *font = GLUT_BITMAP_HELVETICA_12;
+
+            glColor3f(0.0, 1.0, 1.0);
+            glRasterPos2i(420, 560);
+            for (string::iterator i = text.begin(); i != text.end(); ++i){
+                char c = *i;
+                glutBitmapCharacter(font, c);
+            }
+            glColor3f(1.0, 1.0, 1.0);
+            glRasterPos2i(360, 520);
+            text = "You can turn your ship with the A and D keys!";
+            for (string::iterator i = text.begin(); i != text.end(); ++i){
+                char c = *i;
+                glutBitmapCharacter(font, c);
+            }
+
+             glRasterPos2i(270, 500);
+            text = "You can move the ship using the trust in the direction it faces with the W key !";
+            for (string::iterator i = text.begin(); i != text.end(); ++i){
+                char c = *i;
+                glutBitmapCharacter(font, c);
+            }
+
+             glRasterPos2i(370, 480);
+            text = "You can shoot a special beam with SPACE!";
+            for (string::iterator i = text.begin(); i != text.end(); ++i){
+                char c = *i;
+                glutBitmapCharacter(font, c);
+            }
+
+
+            glRasterPos2i(350, 460);
+            text = "You can change the camera to 6 views press F1-F6!";
+            for (string::iterator i = text.begin(); i != text.end(); ++i){
+                char c = *i;
+                glutBitmapCharacter(font, c);
+            }
+
+
+            glRasterPos2i(320, 440);
+            text = "You can use add zoom to the camera using + - keys in numpad!";
+            for (string::iterator i = text.begin(); i != text.end(); ++i){
+                char c = *i;
+                glutBitmapCharacter(font, c);
+            }
+
+            glColor3f(1.0, 0.0, 0.0);
+            text = "WATCH OUT THE TRUST AND BEAM FUNCIONS NEED TO COOLDOWN BEFORE USING THEM AGAIN!";
+            glRasterPos2i(200, 400);
+            for (string::iterator i = text.begin(); i != text.end(); ++i){
+                char c = *i;
+                glutBitmapCharacter(font, c);
+            }
+
+            glColor3f(0.0, 1.0, 0.0);
+            text = "Press A or D to play!";
+            glRasterPos2i(430, 380);
+            for (string::iterator i = text.begin(); i != text.end(); ++i){
+                char c = *i;
+                glutBitmapCharacter(font, c);
+            }
+
+            glMatrixMode(GL_PROJECTION);
+            glPopMatrix();
+            glMatrixMode(GL_MODELVIEW);
+            glPopMatrix();
+            glEnable(GL_TEXTURE_2D);
+            glEnable(GL_DEPTH_TEST);
+            glEnable(GL_LIGHTING);
+
+            if(action){
+                //reset
+                asteroids_number=0;
+                lvl=1;
+                lives=3;
+                points=0;
+                create_asteroids();
+                game_Ends=false;
             }
         }
-        remove_particles();
-        remove_beams();
-        if(deleted=true)
-            remove_asteroids();       
+
+        
+            if(game_Start){
+                player_asteroid_colision_detection();
+                            
+                        
+                if(beam_number>0)
+                    beam_asteroid_colision_detection();
+                            
+                for (int i = 0; i < asteroids_number; i++){
+                    if(!asteroids[i]->dead){
+                    
+                        asteroids[i]->pre_display();
+                        glPushMatrix();
+                        glTranslatef(asteroids[i]->posx,0,asteroids[i]->posz);
+                        glRotatef( asteroids[i]->increment_rot,asteroids[i]->rotx,asteroids[i]->roty,asteroids[i]->rotz);
+                        asteroid->obj->display();
+                        glPopMatrix();
+                        asteroids[i]->asteroid_add_mov();
+                    }
+                }
+                            
+                for (int i = 0; i < beam_number; i++){
+                    if(!beams[i]->out)
+                        beams[i]->display(beam);      
+                }
+            }
+            remove_particles();
+            remove_beams();
+            if(deleted=true)
+                remove_asteroids();       
+        }
+        if (game_Ends)
+        {
+            glDisable(GL_LIGHTING);
+            glDisable(GL_DEPTH_TEST);
+            glDisable(GL_TEXTURE_2D);
+            glMatrixMode(GL_PROJECTION);
+            glPushMatrix();
+            glLoadIdentity();
+            gluOrtho2D(0, 1000, 0, 1000);
+            glMatrixMode(GL_MODELVIEW);
+            glPushMatrix();
+            glLoadIdentity();
+            glBegin(GL_QUADS);
+            glColor4f(0.1, 0.1, 0.1, 0.9);
+            glVertex2i(300, 400);
+            glVertex2i(300, 600);
+            glVertex2i(700, 600);
+            glVertex2i(700, 400);
+            glEnd();
+            glColor3f(1.0, 0.0, 0.0);
+            string text = "Nice Try!";
+            void *font = GLUT_BITMAP_HELVETICA_18;
+
+            glColor3f(1.0, 0.0, 0.0);
+            glRasterPos2i(450, 540);
+            for (string::iterator i = text.begin(); i != text.end(); ++i){
+                char c = *i;
+                glutBitmapCharacter(font, c);
+            }
+
+            glRasterPos2i(393, 500);
+            text = "You scored: "+ to_string(points)+" Points!";
+            for (string::iterator i = text.begin(); i != text.end(); ++i){
+                char c = *i;
+                glutBitmapCharacter(font, c);
+            }
+
+
+            text = "Press P to play again!";
+            glRasterPos2i(410, 460);
+            for (string::iterator i = text.begin(); i != text.end(); ++i){
+                char c = *i;
+                glutBitmapCharacter(font, c);
+            }
+
+            glMatrixMode(GL_PROJECTION);
+            glPopMatrix();
+            glMatrixMode(GL_MODELVIEW);
+            glPopMatrix();
+            glEnable(GL_TEXTURE_2D);
+            glEnable(GL_DEPTH_TEST);
+            glEnable(GL_LIGHTING);
+
+            if(action){
+                //reset
+                asteroids_number=0;
+                lvl=1;
+                lives=3;
+                points=0;
+                create_asteroids();
+                game_Ends=false;
+            }
+        }
     }
 
 };
