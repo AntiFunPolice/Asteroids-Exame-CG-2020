@@ -332,7 +332,7 @@ public:
         glEnable(GL_LIGHTING);
     
     
-        printf("Numero Asteroides %d  Numero Asteroides Vivos %d killed %d\n", asteroids_number,living_asteroids,killed);
+        //printf("Numero Asteroides %d  Numero Asteroides Vivos %d killed %d\n", asteroids_number,living_asteroids,killed);
     
         if(!game_Ends){
             if(!infinity)

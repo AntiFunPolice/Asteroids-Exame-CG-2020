@@ -105,7 +105,7 @@ void camera(){
             set_camera(nave->xx , 7, nave->zz+1 , nave->xx, nave->yy, nave->zz-3, 0.0, 1, 0);
             break;
         case 2:
-            set_camera(nave->xx , 16, nave->zz , nave->xx, nave->yy, nave->zz-3, 0.0, 1, 0);
+            set_camera(nave->xx , 14, nave->zz , nave->xx, nave->yy, nave->zz-3, 0.0, 1, 0);
             break;
 
         case 3:
@@ -342,6 +342,8 @@ void keyboard(unsigned char key, int x, int y){
         //case 'e': _e = true; break;
         case ' ': _space = true; break;
         case 'p': action=true; break;
+        case 0x2b: if(zoom > 0.8)zoom -= zoom_increment; break; //numpad +
+        case 0x2d: if(zoom < 1.2)zoom += zoom_increment; break; //numpad -
        
 
     }

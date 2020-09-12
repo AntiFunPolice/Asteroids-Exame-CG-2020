@@ -11,7 +11,7 @@ public:
     float direction;
     float speedx=0,speedz=0;
     float increment_rot=1;
-    float dead=false;W
+    float dead=false;
     
 
     Asteroid(){
