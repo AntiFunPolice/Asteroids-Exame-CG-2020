@@ -16,6 +16,10 @@ int min_width = 1000, min_height = 1000;
 int wireframe = 0, antialiasing = 1, showing_labels = 1, lighting = 1, gouroud= 1;
 float zoom = 1, zoom_increment = 0.1;
 
+std::string menuentry1 = "Switch Flat / Wireframe representation: "+string(wireframe ? "ON" : "OFF");
+std::string menuentry2 = "Toggle Lighting: "+string(lighting ? "ON" : "OFF");
+std::string menuentry3 = "Toggle Gouraud Shading: "+string(gouroud ? "ON" : "OFF");
+std::string menuentry4 = "Toggle Antialiasing (MSAA): "+string(antialiasing ? "ON" : "OFF");
 
 Nave *nave;
 GameManager *game;
@@ -352,9 +356,50 @@ void apply_menu_options()
     }
     else
         glDisable(GL_MULTISAMPLE);
+
+}
+
+void menu(int value)
+{
+    switch (value)
+    {
+    case 1:
+        wireframe = !wireframe;
+        menuentry1 = "Switch Flat / Wireframe representation: "+string(wireframe ? "ON" : "OFF");
+        glutChangeToMenuEntry(1,menuentry1.c_str(),1);
+        break;
+    case 2:
+        lighting = !lighting;
+        menuentry2 = "Toggle Lighting: "+string(lighting ? "ON" : "OFF");
+        glutChangeToMenuEntry(2,menuentry2.c_str(),2);
+        break;
+    case 3:
+        gouroud = !gouroud;
+        menuentry3 = "Toggle Gouraud Shading: "+string(gouroud ? "ON" : "OFF");
+        glutChangeToMenuEntry(3,menuentry3.c_str(),3);
+        break;
+    case 4:
+        antialiasing = !antialiasing;
+        menuentry4 = "Toggle Antialiasing (MSAA): "+string(antialiasing ? "ON" : "OFF");
+        glutChangeToMenuEntry(4,menuentry4.c_str(),4);
+        break;
+    }
+}
+
+
+void init_menu()
+{
+    
+    glutCreateMenu(menu);
+    glutAddMenuEntry(menuentry1.c_str(), 1);
+    glutAddMenuEntry(menuentry2.c_str(), 2);
+    glutAddMenuEntry(menuentry3.c_str(), 3);
+    glutAddMenuEntry(menuentry4.c_str(), 4);
+    glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
 
 void display(){
+//init_menu();
 
 
 fuel_counter++;
@@ -485,35 +530,6 @@ void keyboard_special(int key, int, int)
 
 
 
-void menu(int value)
-{
-    switch (value)
-    {
-    case 1:
-        wireframe = !wireframe;
-        break;
-    case 2:
-        lighting = !lighting;
-        break;
-    case 3:
-        gouroud = !gouroud;
-        break;
-    case 4:
-        antialiasing = !antialiasing;
-        break;
-    }
-}
-
-
-void init_menu()
-{
-    glutCreateMenu(menu);
-    glutAddMenuEntry("Switch Flat / Wireframe representation"+ wireframe, 1);
-    glutAddMenuEntry("Toggle Lighting", 2);
-    glutAddMenuEntry("Toggle Gouraud Shading:", 3);
-    glutAddMenuEntry("Toggle Antialiasing (MSAA)", 4);
-    glutAttachMenu(GLUT_RIGHT_BUTTON);
-}
 
 
 int main(int argc, char **argv)
