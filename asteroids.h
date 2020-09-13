@@ -41,8 +41,8 @@ public:
 
     }
     
-    void check_Limits(){
-        if(abs(posx) > 16||abs(posz) > 16){
+    void check_Limits(int x){
+        if(abs(posx) > 16-x||abs(posz) > 16-x){
             posx*=-1;
             posz*=-1;
     
@@ -62,16 +62,16 @@ public:
     }
 
     void pre_display(){
-        check_Limits();
+        check_Limits(0);
        
     }
 
    
 
-    void asteroid_add_mov(){
+    void asteroid_add_mov(int x){
         increment_rot+=1;
-        posx+=(speedx/600);
-        posz+=(speedz/600);
+        posx+=(speedx/(600 + x));
+        posz+=(speedz/(600 + x));
     }
 
     

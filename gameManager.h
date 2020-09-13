@@ -470,7 +470,7 @@ public:
                         glRotatef( asteroids[i]->increment_rot,asteroids[i]->rotx,asteroids[i]->roty,asteroids[i]->rotz);
                         asteroid->obj->display();
                         glPopMatrix();
-                        asteroids[i]->asteroid_add_mov();
+                        asteroids[i]->asteroid_add_mov(0);
                     }
                 }
                             

@@ -5,6 +5,7 @@
 #include <GL/glut.h>
 #include <cstdio>
 #include <GL/freeglut.h> 
+#include <time.h>
 
 #include "gameManager.h"
 
@@ -19,6 +20,9 @@ float zoom = 1, zoom_increment = 0.1;
 Nave *nave;
 GameManager *game;
 Asteroid *asteroid_light;
+Obj *luz;
+Obj *luz2;
+
 
 
 int active_camera = 1;
@@ -40,6 +44,9 @@ void create_objects(){
 
     game = new GameManager();
   	nave = game->nave;
+    luz = new Obj("asteroidluz");
+    luz2 = new Obj("luz2");
+    asteroid_light= new Asteroid(0);
 }
 
 
@@ -48,27 +55,99 @@ void init_lights(){
 
     glEnable(GL_LIGHTING);
 
+    glEnable(GL_LIGHT0);
     glEnable(GL_LIGHT1);
+    glEnable(GL_LIGHT2);
+    glEnable(GL_LIGHT3);
+    glEnable(GL_LIGHT4);
+    glEnable(GL_LIGHT5);
+
 
     GLfloat light_ambient[] = {0.2, 0.2, 0.2, 1.0};
     GLfloat light_diffuse[] = {1.0, 1.0, 1.0, 0.8};
     GLfloat light_specular[] = {1.0, 1.0, 1.0, 0.8};
+    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+
+    GLfloat lightPosition0[] = {0, -4.0, 0,1.0};
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition0);
+
+
     glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient);
     glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT1, GL_SPECULAR, light_specular);
 
-    GLfloat lightPosition[] = {0.0, 0, 1, 0.0};
-    glLightfv(GL_LIGHT1, GL_POSITION, lightPosition);
+    GLfloat lightPosition1[] = {0, 6.0, 0,1.0};
+    glLightfv(GL_LIGHT1, GL_POSITION, lightPosition1);
+
+
+
+    glLightfv(GL_LIGHT2, GL_AMBIENT, light_ambient);
+    glLightfv(GL_LIGHT2, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT2, GL_SPECULAR, light_specular);
+
+    GLfloat lightPosition2[] = {0, 5.0, 1.5,1.0};
+    glLightfv(GL_LIGHT2, GL_POSITION, lightPosition2);
+
+
+
+    glLightfv(GL_LIGHT3, GL_AMBIENT, light_ambient);
+    glLightfv(GL_LIGHT3, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT3, GL_SPECULAR, light_specular);
+
+    GLfloat lightPosition3[] = {0, 5.0, -1.5,1.0};
+    glLightfv(GL_LIGHT3, GL_POSITION, lightPosition3);
+
+
+
+
+    glLightfv(GL_LIGHT4, GL_AMBIENT, light_ambient);
+    glLightfv(GL_LIGHT4, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT4, GL_SPECULAR, light_specular);
+
+    GLfloat lightPosition4[] = {-1.5, 5.0, 0,1.0};
+    glLightfv(GL_LIGHT4, GL_POSITION, lightPosition4);
+
+
+
+    glLightfv(GL_LIGHT5, GL_AMBIENT, light_ambient);
+    glLightfv(GL_LIGHT5, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT5, GL_SPECULAR, light_specular);
+
+    GLfloat lightPosition5[] = {1.5, 5.0, 0,1.0};
+    glLightfv(GL_LIGHT5, GL_POSITION, lightPosition5);
 
 
 
     glShadeModel(GL_SMOOTH);
 }
 
+
+
 void move_light(){
     
-    GLfloat lightPosition[] = {0.0, 0, 1, 0.0};
-    glLightfv(GL_LIGHT1, GL_POSITION, lightPosition);
+    GLfloat lightPosition0[] = {asteroid_light->posx,         -4.0,    asteroid_light->posz ,         1.0}; //posicao do asteroide
+    GLfloat lightPosition1[] = {asteroid_light->posx,          7.0,    asteroid_light->posz ,         1.0};
+    GLfloat lightPosition2[] = {asteroid_light->posx,          6.0,    asteroid_light->posz + 1.5,    1.0};
+    GLfloat lightPosition3[] = {asteroid_light->posx,          6.0,    asteroid_light->posz + -1.5,   1.0};
+    GLfloat lightPosition4[] = { asteroid_light->posx + -1.5,  6.0,    asteroid_light->posz,          1.0};
+    GLfloat lightPosition5[] = { asteroid_light->posx + 1.5,   6.0,    asteroid_light->posz,          1.0};
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition0);
+    glLightfv(GL_LIGHT1, GL_POSITION, lightPosition1);
+    glLightfv(GL_LIGHT2, GL_POSITION, lightPosition2);
+    glLightfv(GL_LIGHT3, GL_POSITION, lightPosition3);
+    glLightfv(GL_LIGHT4, GL_POSITION, lightPosition4);
+    glLightfv(GL_LIGHT5, GL_POSITION, lightPosition5);
+}
+
+void asteroid_light_set(){
+    srand(time(NULL));
+    int oneor2 = rand()%2 +1;
+    asteroid_light->posx      = (oneor2==0 ? (rand()%(15-13)+13) * (rand()%2 ==1 ? 1 : -1) : rand()%15 * (rand()%2 ==1 ? 1 : -1) );
+    asteroid_light->posz      = (oneor2==1 ? (rand()%(15-13)+13) * (rand()%2 ==1 ? 1 : -1) : rand()%15 * (rand()%2 ==1 ? 1 : -1) );
+    asteroid_light->speedx    = ((rand()%10 +1))*(rand()%2 ==1 ? 1 : -1);
+    asteroid_light->speedz    = ((rand()%10 +1))*(rand()%2 ==1 ? 1 : -1);
 }
 
 void init(){
@@ -82,9 +161,11 @@ void init(){
     glLoadIdentity();
     gluPerspective(90, 1, 0.5, 50);
 
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     create_objects();
+    asteroid_light_set();
     init_lights();
     
 
@@ -95,6 +176,8 @@ void set_camera(GLdouble eyeX, GLdouble eyeY, GLdouble eyeZ, GLdouble centerX, G
     eyeY = (eyeY - centerY) / zoom + centerY;
     eyeZ = (eyeZ - centerZ) / zoom + centerZ;
     gluLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
+    //init_lights(); // temos de dar update a luz a cada transformacao da camera pois esta esta relacionada com eye position que muda quando a camera muda assim podemos ficar com uma luz estacionaria
+    move_light();
 }
 
 void camera(){
@@ -302,7 +385,17 @@ if(beam_counter==50){
     
     apply_menu_options();
     game->action =action;
-    game->display();  
+    game->display();
+
+    
+    asteroid_light->check_Limits(1);
+    move_light();
+    glPushMatrix();  
+    glTranslatef(asteroid_light->posx,6,asteroid_light->posz);
+    glRotatef(asteroid_light->increment_rot,asteroid_light->rotx,asteroid_light->roty,asteroid_light->rotz);
+    luz2->display();
+    glPopMatrix();
+    asteroid_light->asteroid_add_mov(200);
     movement();
     glColor3f(1, 1, 1);
     trust();
