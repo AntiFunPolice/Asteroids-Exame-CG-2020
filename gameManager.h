@@ -470,21 +470,6 @@ public:
                         asteroids[i]->asteroid_add_mov(0);
 
 
-                       // glBegin(GL_QUADS);
-                       // glVertex3f(asteroids[i]->posx + asteroid->obj->get_min_x(),0,asteroids[i]->posz + asteroid->obj->get_min_z());
-                       // glVertex3f(asteroids[i]->posx + asteroid->obj->get_max_x(),0,asteroids[i]->posz + asteroid->obj->get_min_z());
-                       // glVertex3f(asteroids[i]->posx + asteroid->obj->get_max_x(),0,asteroids[i]->posz + asteroid->obj->get_max_z());
-                       // glVertex3f(asteroids[i]->posx + asteroid->obj->get_min_x(),0,asteroids[i]->posz + asteroid->obj->get_max_z());
-                       // glEnd();
-                       // 
-                       // glBegin(GL_QUADS);
-                       // glVertex3f(nave_min_x + nave->xx,0,nave->zz + nave_min_y);
-                       // glVertex3f(nave_max_x + nave->xx,0,nave->zz + nave_min_y);
-                       // glVertex3f(nave_max_x + nave->xx,0,nave->zz + nave_max_y);
-                       // glVertex3f(nave_min_x + nave->xx,0,nave->zz + nave_max_y);
-                       // glEnd();
-
-
 
                     }
                 }

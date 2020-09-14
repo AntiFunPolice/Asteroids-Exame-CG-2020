@@ -40,8 +40,10 @@ public:
     
     void check_Limits(int x){
         if(abs(posx) > 16-x||abs(posz) > 16-x){
-            posx*=-1;
-            posz*=-1;
+            if(abs(posx)>16-x)
+                posx*=-1;
+            if(abs(posz)>16-x)
+                posz*=-1;
     
             if(posx>0)
                 posx-=0.5;

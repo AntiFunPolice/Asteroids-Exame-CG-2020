@@ -40,7 +40,10 @@ public:
    
 	void check_Limits(){
 		if(abs(xx) > 16||abs(zz) > 16){
+			
+		if(abs(xx)>16)
 			xx*=-1;
+		if(abs(zz)>16)
 			zz*=-1;
 	
 			if(xx>0)
