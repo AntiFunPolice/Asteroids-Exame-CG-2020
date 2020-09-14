@@ -65,7 +65,6 @@ void init_lights(){
     glEnable(GL_LIGHT4);
     glEnable(GL_LIGHT5);
 
-
     GLfloat light_ambient[] = {0.2, 0.2, 0.2, 1.0};
     GLfloat light_diffuse[] = {1.0, 1.0, 1.0, 0.8};
     GLfloat light_specular[] = {1.0, 1.0, 1.0, 0.8};
@@ -73,55 +72,25 @@ void init_lights(){
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
 
-    GLfloat lightPosition0[] = {0, -4.0, 0,1.0};
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition0);
-
-
     glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient);
     glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT1, GL_SPECULAR, light_specular);
-
-    GLfloat lightPosition1[] = {0, 6.0, 0,1.0};
-    glLightfv(GL_LIGHT1, GL_POSITION, lightPosition1);
-
-
 
     glLightfv(GL_LIGHT2, GL_AMBIENT, light_ambient);
     glLightfv(GL_LIGHT2, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT2, GL_SPECULAR, light_specular);
 
-    GLfloat lightPosition2[] = {0, 5.0, 1.5,1.0};
-    glLightfv(GL_LIGHT2, GL_POSITION, lightPosition2);
-
-
-
     glLightfv(GL_LIGHT3, GL_AMBIENT, light_ambient);
     glLightfv(GL_LIGHT3, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT3, GL_SPECULAR, light_specular);
-
-    GLfloat lightPosition3[] = {0, 5.0, -1.5,1.0};
-    glLightfv(GL_LIGHT3, GL_POSITION, lightPosition3);
-
-
-
 
     glLightfv(GL_LIGHT4, GL_AMBIENT, light_ambient);
     glLightfv(GL_LIGHT4, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT4, GL_SPECULAR, light_specular);
 
-    GLfloat lightPosition4[] = {-1.5, 5.0, 0,1.0};
-    glLightfv(GL_LIGHT4, GL_POSITION, lightPosition4);
-
-
-
     glLightfv(GL_LIGHT5, GL_AMBIENT, light_ambient);
     glLightfv(GL_LIGHT5, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT5, GL_SPECULAR, light_specular);
-
-    GLfloat lightPosition5[] = {1.5, 5.0, 0,1.0};
-    glLightfv(GL_LIGHT5, GL_POSITION, lightPosition5);
-
-
 
     glShadeModel(GL_SMOOTH);
 }
@@ -475,12 +444,10 @@ void keyboard(unsigned char key, int x, int y){
         case 'p': action=true; break;
         case 0x2b: 
             if(zoom > 0.8)zoom -= zoom_increment; 
-             //glOrtho(-zoom, zoom, -zoom, zoom, 1, 3);
             break; //numpad +
         
         case 0x2d: 
             if(zoom < 1.2)zoom += zoom_increment; 
-             //glOrtho(-zoom, zoom, -zoom, zoom, 1, 3);
             break; //numpad -
        
 
