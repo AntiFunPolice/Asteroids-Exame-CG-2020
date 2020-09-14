@@ -46,10 +46,7 @@ public:
 
     }
 
-    ~GameManager(){
-        
-        delete skybox;
-    }
+   
 
     create_asteroid_model(){
         asteroid = new Asteroid(); 
@@ -471,6 +468,17 @@ public:
                         asteroid->obj->display();
                         glPopMatrix();
                         asteroids[i]->asteroid_add_mov(0);
+
+
+                       // glBegin(GL_QUADS);
+                       // glVertex3f(asteroids[i]->posx + asteroid->obj->get_min_x(),0,asteroids[i]->posz + asteroid->obj->get_min_z());
+                       // glVertex3f(asteroids[i]->posx + asteroid->obj->get_max_x(),0,asteroids[i]->posz + asteroid->obj->get_min_z());
+                       // glVertex3f(asteroids[i]->posx + asteroid->obj->get_max_x(),0,asteroids[i]->posz + asteroid->obj->get_max_z());
+                       // glVertex3f(asteroids[i]->posx + asteroid->obj->get_min_x(),0,asteroids[i]->posz + asteroid->obj->get_max_z());
+                       // glEnd();
+                        
+
+
                     }
                 }
                             

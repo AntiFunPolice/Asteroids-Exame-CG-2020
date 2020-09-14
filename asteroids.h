@@ -23,10 +23,7 @@ public:
          get_Increments();
     }
 
-    ~Asteroid(){
-
-        delete obj;
-    }
+    
 
 
     void get_Increments(){

@@ -18,10 +18,6 @@ public:
         obj = new Obj("nave_smaller_2");
     }
 
-    ~Nave()
-    {
-        delete obj;
-    }
 
 
      float get_min_x(){

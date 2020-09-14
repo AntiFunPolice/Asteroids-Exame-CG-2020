@@ -1,12 +1,11 @@
 
 #include <iostream>
+
 #include <GL/glew.h>
-#include <GL/glext.h>
 #include <GL/glut.h>
 #include <cstdio>
-#include <GL/freeglut.h> 
 #include <time.h>
-
+#include <GL/freeglut.h> 
 #include "gameManager.h"
 
 using namespace std;
@@ -15,7 +14,7 @@ using namespace std;
 int min_width = 1000, min_height = 1000;
 int wireframe = 0, antialiasing = 1, showing_labels = 1, lighting = 1, gouroud= 1;
 float zoom = 1, zoom_increment = 0.1;
-
+int teste = -1,olhox,olhoz;
 std::string menuentry1 = "Switch Flat / Wireframe representation: "+string(wireframe ? "ON" : "OFF");
 std::string menuentry2 = "Toggle Lighting: "+string(lighting ? "ON" : "OFF");
 std::string menuentry3 = "Toggle Gouraud Shading: "+string(gouroud ? "ON" : "OFF");
@@ -163,7 +162,7 @@ void init(){
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(90, 1, 0.5, 50);
+    gluPerspective(90, 1, 0.5, 70);
 
 
     glMatrixMode(GL_MODELVIEW);
@@ -175,13 +174,13 @@ void init(){
 
 }
 
-void set_camera(GLdouble eyeX, GLdouble eyeY, GLdouble eyeZ, GLdouble centerX, GLdouble centerY, GLdouble centerZ, GLdouble upX, GLdouble upY, GLdouble upZ){
-    eyeX = (eyeX - centerX) / zoom + centerX;
+void camera_zoom(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ){
+  
+    eyeX = (eyeX - centerX) / zoom + centerX; 
     eyeY = (eyeY - centerY) / zoom + centerY;
     eyeZ = (eyeZ - centerZ) / zoom + centerZ;
     gluLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
-    //init_lights(); // temos de dar update a luz a cada transformacao da camera pois esta esta relacionada com eye position que muda quando a camera muda assim podemos ficar com uma luz estacionaria
-    move_light();
+  
 }
 
 void camera(){
@@ -189,25 +188,25 @@ void camera(){
     switch (active_camera)
     {
         case 1:
-            set_camera(nave->xx , 7, nave->zz+1 , nave->xx, nave->yy, nave->zz-3, 0.0, 1, 0);
+            camera_zoom(nave->xx, 7, nave->zz+1 , nave->xx, nave->yy, nave->zz-3, 0.0, 1, 0);
             break;
         case 2:
-            set_camera(nave->xx , 14, nave->zz , nave->xx, nave->yy, nave->zz-3, 0.0, 1, 0);
+            camera_zoom(nave->xx , 14, nave->zz , nave->xx, nave->yy, nave->zz-3, 0.0, 1, 0);
             break;
 
         case 3:
-           set_camera((nave->xx - 10*nave->x_Camera3d) ,  0.7 ,(nave->zz-10*nave->z_Camera3d) , nave->xx + nave->x_Camera3d, 0, nave->zz +nave->z_Camera3d , 0, 1, 0);
+           camera_zoom((nave->xx - 10*nave->x_Camera3d) ,  0.7 ,(nave->zz-10*nave->z_Camera3d) , nave->xx + nave->x_Camera3d, 0, nave->zz +nave->z_Camera3d , 0, 1, 0);
             break;
         case 4:
-           set_camera( (nave->xx + 10*nave->x_Camera3d) ,  0.6 ,(nave->zz+10*nave->z_Camera3d) , nave->xx - nave->x_Camera3d, 0, nave->zz -nave->z_Camera3d , 0, 1, 0);
+           camera_zoom( (nave->xx + 10*nave->x_Camera3d) ,  0.6 ,(nave->zz+10*nave->z_Camera3d) , nave->xx - nave->x_Camera3d, 0, nave->zz -nave->z_Camera3d , 0, 1, 0);
             break;
 
         case 5:
-           set_camera( 11, 11, 11, nave->xx, nave->yy, nave->zz , 0, 1, 0);
+           camera_zoom( 11, 11, 11, nave->xx, nave->yy, nave->zz , 0, 1, 0);
             break;
 
         case 6:
-           set_camera( -11 , -11 ,-11 , nave->xx, nave->yy, nave->zz , 0, 1, 0);
+           camera_zoom( -11 , -11 ,-11 , nave->xx, nave->yy, nave->zz , 0, 1, 0);
             break;
       
     }
@@ -352,7 +351,6 @@ void apply_menu_options()
     if (antialiasing)
     {
         glEnable(GL_MULTISAMPLE);
-        glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
     }
     else
         glDisable(GL_MULTISAMPLE);
@@ -413,18 +411,15 @@ if(beam_counter==50){
     beam_ready=true;
     beam_counter=0;
 }
-// Limpa os "buffers"
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-// Indica que as próximas operações de matrizes serão feitas sobre
-// a matriz "ModelView"
+   
     glMatrixMode(GL_MODELVIEW);
 
-// Limpa a matriz "ModelView" (transforma-a na matriz identidade)
+
     glLoadIdentity();
-// ---
-// Os objetos serão desenhados e animados aqui
-// ---
+
     get_3d_Camera();
     camera();
     
@@ -445,24 +440,22 @@ if(beam_counter==50){
     glColor3f(1, 1, 1);
     trust();
   	display_labels();
-// Troca os dois "buffers" de "display", e imprime na janela o
-// atualizado. Substitui o "glFlush", quando em modo "GLUT_DOUBLE".
+
     glutSwapBuffers();
 }
 
 void reshape(int w, int h)
 {
-// Define o "Viewport" como o tamanho da janela
     glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 }
 
 
 
 
-void call_display(int)
+void game_display_loop(int)
 {
     glutPostRedisplay();
-    glutTimerFunc(1000 / 120, call_display, 0);
+    glutTimerFunc(1000 / 120, game_display_loop, 0);
 }
 
 
@@ -480,8 +473,15 @@ void keyboard(unsigned char key, int x, int y){
         //case 'e': _e = true; break;
         case ' ': _space = true; break;
         case 'p': action=true; break;
-        case 0x2b: if(zoom > 0.8)zoom -= zoom_increment; break; //numpad +
-        case 0x2d: if(zoom < 1.2)zoom += zoom_increment; break; //numpad -
+        case 0x2b: 
+            if(zoom > 0.8)zoom -= zoom_increment; 
+             //glOrtho(-zoom, zoom, -zoom, zoom, 1, 3);
+            break; //numpad +
+        
+        case 0x2d: 
+            if(zoom < 1.2)zoom += zoom_increment; 
+             //glOrtho(-zoom, zoom, -zoom, zoom, 1, 3);
+            break; //numpad -
        
 
     }
@@ -534,34 +534,30 @@ void keyboard_special(int key, int, int)
 
 int main(int argc, char **argv)
 {
-// Inicializa o GLUT
+
     glutInit(&argc, argv);
-// Indica que o "display" utilizará duplo "buffer", o esquema de
-// cores "RBG" ("Red, Green, Blue") e um "buffer" de profundidade
+
+
     glutSetOption(GLUT_MULTISAMPLE, 8);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH | GLUT_MULTISAMPLE);
   
-// Indica a posição da janela
+
     glutInitWindowPosition(0, 0);
-// Indica o tamanho da janela
+
     glutInitWindowSize(min_width, min_height);
-// Cria a janela, com o título dado
+
     glutCreateWindow("Asteroids");
-// Define mais algumas opções
+
     init();
-// Define a função de "display", que é chamada no início e sempre
-// que a função "glutPostRedisplay é chamada
+    init_menu();
+
     glutDisplayFunc(display);
-// Define a função de "reshape", que é chamada sempre que o tamanho
-// da janela muda
-    //glutReshapeFunc(reshape);
-    call_display(0);
+    game_display_loop(0);
 
     glutKeyboardFunc(keyboard);
     glutKeyboardUpFunc(keyboardup);
     glutSpecialFunc(keyboard_special);
-    init_menu();
-// Inicia o ciclo de vida do GLUT
+
     glutMainLoop();
     return 1;
 }

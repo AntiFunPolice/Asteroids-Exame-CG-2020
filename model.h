@@ -1,4 +1,4 @@
-#define STB_IMAGE_IMPLEMENTATION
+﻿#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include <GL/glut.h>
 #include <iostream>
@@ -14,15 +14,12 @@ private:
     class Model
     {
     public:
-        // Vertex and texture vertex positions
         float v[12000][3], vt[12000][2];
         int n_v = 0, n_vt = 0;
 
-        // Normals for each vertex
         float vn[12000][3];
         int n_vn = 0;
 
-        // Vertex indices for each face
         int v_i[20000][3], vt_i[20000][3], vn_i[20000][3];
         int n_f = 0;
 
@@ -83,9 +80,11 @@ private:
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+        
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        // load and generate the texture
+
+        
         int width, height, nrChannels;
         unsigned char *data = stbi_load(path, &width, &height, &nrChannels, 0);
         if (data)
@@ -102,7 +101,7 @@ public:
     float incrementx,incrementy,incrementz;
 
     Model *model;
-   // Material *material;
+
     unsigned int texture;
 
     Obj(char *name){
@@ -122,11 +121,6 @@ public:
     }
 
     
-
-    ~Obj(){
-        delete model;
-            
-    }
 
     void min_max_find(){
        
