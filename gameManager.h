@@ -61,10 +61,10 @@ public:
     create_nave(){
         nave = new Nave();
         nave_min_x = nave->obj->get_min_x();
-        nave_min_y = nave->obj->get_min_y();
+        nave_min_y = nave->obj->get_min_z();
         
         nave_max_x = nave->obj->get_max_x();
-        nave_max_y = nave->obj->get_max_y();
+        nave_max_y = nave->obj->get_max_z();
        
 
     }
@@ -267,9 +267,9 @@ public:
     
         for (int j = 0; j < beam_number; ++j){
             beam_min[0] = beam->get_min_x() +beams[j]->posx;
-            beam_min[1] = beam->get_min_y() +beams[j]->posz;
+            beam_min[1] = beam->get_min_z() +beams[j]->posz;
             beam_max[0] = beam->get_max_x() +beams[j]->posx;
-            beam_max[1] = beam->get_max_y() +beams[j]->posz;
+            beam_max[1] = beam->get_max_z() +beams[j]->posz;
         
        
             if(!beams[j]->out){
@@ -476,7 +476,14 @@ public:
                        // glVertex3f(asteroids[i]->posx + asteroid->obj->get_max_x(),0,asteroids[i]->posz + asteroid->obj->get_max_z());
                        // glVertex3f(asteroids[i]->posx + asteroid->obj->get_min_x(),0,asteroids[i]->posz + asteroid->obj->get_max_z());
                        // glEnd();
-                        
+                       // 
+                       // glBegin(GL_QUADS);
+                       // glVertex3f(nave_min_x + nave->xx,0,nave->zz + nave_min_y);
+                       // glVertex3f(nave_max_x + nave->xx,0,nave->zz + nave_min_y);
+                       // glVertex3f(nave_max_x + nave->xx,0,nave->zz + nave_max_y);
+                       // glVertex3f(nave_min_x + nave->xx,0,nave->zz + nave_max_y);
+                       // glEnd();
+
 
 
                     }
